@@ -1,0 +1,61 @@
+
+#ifndef KEYINTERFACE
+
+#define KEYINTERFACE
+#include "vex.h"
+#include <vector>
+#include <array>
+
+#endif
+
+class KeyInterface {
+private:
+  std::vector<void(*)()> keyBindRoutines;
+  std::vector<std::array<vex::controller::button>> keyBinds;
+  std::vector<bool> shadows;
+  
+public:
+
+  enum class Key {
+    A,
+    B,
+    X,
+    Y,
+    Down,
+    Up,
+    Left,
+    Right,
+    L1,
+    L2,
+    R1,
+    R2
+  };
+  
+  static struct keyState {
+    bool A;
+    bool B;
+    bool X;
+    bool Y;
+    bool Down;
+    bool Up;
+    bool Left;
+    bool Right;
+    bool L1;
+    bool L2;
+    bool R1;
+    bool R2;
+  };
+
+
+  keyState controllerToKeyState(std::array<>)
+  
+  void pushKeyBind(void (*keyBindRoutine)(), std::array<vex::controller::button> keyBind, bool shadow) {
+
+    keyBindRoutines.push_back(keyBindRoutine)
+    keyBinds.push_back(keyBind)
+    shadows.push_back(shadow)
+  }
+  void getKeyState() {
+    
+  }
+}
