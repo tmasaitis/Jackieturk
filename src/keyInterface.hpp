@@ -4,14 +4,12 @@
 #define KEYINTERFACE
 #include "vex.h"
 #include <vector>
-#include <array>
-
-#endif
+//#include <array>
 
 class KeyInterface {
 private:
-  std::vector<void(*)()> keyBindRoutines;
-  std::vector<std::array<vex::controller::button>> keyBinds;
+  std::vector< void(*)() > keyBindRoutines;
+  std::vector< std::vector< vex::controller::button > > keyBinds;
   std::vector<bool> shadows;
   
 public:
@@ -31,7 +29,7 @@ public:
     R2
   };
   
-  static struct KeyState {
+  struct KeyState {
     bool A;
     bool B;
     bool X;
@@ -47,12 +45,12 @@ public:
   };
 
 
-  keyState controllerToKeyState(std::array<Key> keys) {
+  KeyState controllerToKeyState(std::vector<Key> keys) {
     
-    KeyState keyState;
-    int keyArraySize = keys.size();
+    KeyState keyState{};
+    int keyvectorSize = keys.size();
     
-    for(int i = 0; i < keyArraySize; i++)
+    for(int i = 0; i < keyvectorSize; i++)
     {
       
       Key key = keys[i];
@@ -101,14 +99,14 @@ public:
     return keyState;
   }
   
-  void pushKeyBind(void (*keyBindRoutine)(), std::array<vex::controller::button> keyBind, bool shadow) {
+  void pushKeyBind(void (*keyBindRoutine)(), std::vector<vex::controller::button> keyBind, bool shadow) {
 
-    keyBindRoutines.push_back(keyBindRoutine)
-    keyBinds.push_back(keyBind)
-    shadows.push_back(shadow)
+    keyBindRoutines.push_back(keyBindRoutine);
+    keyBinds.push_back(keyBind);
+    shadows.push_back(shadow);
   }
-  KeyState getKeyState(controller Controller) {
-    KeyState keyState;
+  KeyState getKeyState(vex::controller Controller) {
+    KeyState keyState{};
     keyState.A = Controller.ButtonA.pressing();
     keyState.B = Controller.ButtonB.pressing();
     keyState.X = Controller.ButtonX.pressing();
@@ -125,9 +123,12 @@ public:
     return keyState;
   }
 
-  void pollInput(controller Controller)
+  void pollInput(vex::controller Controller)
   {
     KeyState keyState = getKeyState(Controller);
     //Left Off
   }
-}
+};
+
+
+#endif
