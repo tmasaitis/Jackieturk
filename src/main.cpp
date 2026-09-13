@@ -83,8 +83,8 @@ void usercontrol(void)
 {
   //Init User Interface
   KeyInterface userInterface;
-  userInterface.pushKeyBind([]() {lift.incTarget();}, std::vector<Key> {Key::R1});
-  userInterface.pushKeyBind([]() {lift.decTarget();}, std::vector<Key> {Key::R2});
+  userInterface.pushKeyBind([&lift]() {lift.incTarget();}, std::vector<Key> {Key::R1});
+  userInterface.pushKeyBind([&lift]() {lift.decTarget();}, std::vector<Key> {Key::R2});
 
   while (true)
   {
