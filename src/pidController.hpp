@@ -18,7 +18,7 @@ public:
 private:
   double accumulator = 0;
   double previousError = 0;
-  Parameters parameters{};
+  Parameters &parameters;
 
   double clamp(double x)
   {
@@ -27,8 +27,8 @@ private:
   }
 
 public:
-
-  PIDController(Parameters parameters): parameters{parameters} {}
+  //Test to ensure where this should be enabled at the very beginning, when derivative is correctly computable.
+  PIDController(const Parameters &parameters): parameters{parameters} {}
 
   double step(double error)
   {

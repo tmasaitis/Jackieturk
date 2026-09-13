@@ -4,20 +4,23 @@
 #define KEYINTERFACE
 #include "vex.h"
 #include <vector>
+#include <functional>
 //#include <array>
+
+enum class Key {
+  A, B, X, Y,
+  Down, Up, Left, Right,
+  L1, L2, R1, R2
+};
 
 class KeyInterface {
 public:
-  enum class Key {
-    A, B, X, Y,
-    Down, Up, Left, Right,
-    L1, L2, R1, R2
-  };
+
 private:
-  std::vector< void(*)() > keyBindRoutines;
+  std::vector< std::function<void()> > keyBindRoutines;
   std::vector< std::vector<Key> > keyBinds;
   
-  std::vector< void(*)() > shadowedKeyBindRoutines;
+  std::vector< std::function<void()> > shadowedKeyBindRoutines;
   std::vector< std::vector<Key> > shadowedKeyBinds;
   
 public:
@@ -41,22 +44,20 @@ public:
       bool states1[] = {A, B, X, Y, Down, Up, Left, Right, L1, L2, R1, R2};
       bool states2[] = {other.A, other.B, other.X, other.Y, other.Down, other.Up, other.Left, other.Right, other.L1, other.L2, other.R1, other.R2};
       int length = sizeof(states1) / sizeof(bool);
-      
-      bool out = true;
 
       for(int i = 0; i < length; i++)
       {
-        out = out && ( (states1[i] && states2[i]) || !states1[i] );
-        if(!out)
-          break;
+        if (states1[i] && !states2[i])
+          return false;
       }
       
-      return out;
+      return true;
     }
 
 
     KeyState subtract(const KeyState &other) const {
-      KeyState keyState;
+      KeyState keyState{};
+
       bool * returnStates[] = {&keyState.A, &keyState.B, &keyState.X, &keyState.Y, &keyState.Down, &keyState.Up, &keyState.Left, &keyState.Right, &keyState.L1, &keyState.L2, &keyState.R1, &keyState.R2};
       bool states1[] = {A, B, X, Y, Down, Up, Left,Right, L1, L2, R1, R2};
       bool states2[] = {other.A, other.B, other.X, other.Y, other.Down, other.Up, other.Left, other.Right, other.L1, other.L2, other.R1, other.R2};
@@ -73,62 +74,34 @@ public:
     
 
 
+
   KeyState keysToKeyState(const std::vector<Key> &keys) const {
-    
-    KeyState keyState{};
-    int keyvectorSize = keys.size();
-    
-    for(int i = 0; i < keyvectorSize; i++)
-    {
-      
-      Key key = keys[i];
-
-      switch(key)
+      KeyState keyState{};
+      for (Key key : keys)
       {
-        case Key::A:
-          keyState.A = true;
-          break;
-        case Key::B:
-          keyState.B = true;
-          break;
-        case Key::X:
-          keyState.X = true;
-          break;
-        case Key::Y:
-          keyState.Y = true;
-          break;
-        case Key::Down:
-          keyState.Down = true;
-          break;
-        case Key::Up:
-          keyState.Up = true;
-          break;
-        case Key::Left:
-          keyState.Left = true;
-          break;
-        case Key::Right:
-          keyState.Right = true;
-          break;
-        case Key::L1:
-          keyState.L1 = true;
-          break;
-        case Key::L2:
-          keyState.L2 = true;
-          break;
-        case Key::R1:
-          keyState.R1 = true;
-          break;
-        case Key::R2:
-          keyState.R2 = true;
-          break;
+        switch (key)
+        {
+          case Key::A: keyState.A = true; break;
+          case Key::B: keyState.B = true; break;
+          case Key::X: keyState.X = true; break;
+          case Key::Y: keyState.Y = true; break;
+          case Key::Down: keyState.Down = true; break;
+          case Key::Up: keyState.Up = true; break;
+          case Key::Left: keyState.Left = true; break;
+          case Key::Right: keyState.Right = true; break;
+          case Key::L1: keyState.L1 = true; break;
+          case Key::L2: keyState.L2 = true; break;
+          case Key::R1: keyState.R1 = true; break;
+          case Key::R2: keyState.R2 = true; break;
+        }
       }
-    }
-
-    return keyState;
+      return keyState;
   }
   
 
-  void pushKeyBind(void (*keyBindRoutine)(), std::vector<Key> keyBind, bool shadow = false)
+
+
+  void pushKeyBind( std::function<void()> keyBindRoutine, std::vector<Key> keyBind, bool shadow = false)
   {
     if(shadow) {
       shadowedKeyBindRoutines.push_back(keyBindRoutine);
