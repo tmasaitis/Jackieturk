@@ -12,6 +12,7 @@
 #include "keyInterface.hpp"
 #include "pidController.hpp"
 #include "lift.hpp"
+#include "claw.hpp"
 
 #define TPS 120
 #define MSPT (1000/TPS)
@@ -38,6 +39,11 @@ PIDController::Parameters liftParams{1, 0, 1, 100};
 PIDController liftPID = PIDController(liftParams);
 //PID, motor index, rotation index, initPosition:
 Lift lift(liftPID, 19, 20, 0);
+
+PIDController::Parameters clawParams{1, 0, 1, 50};
+PIDController clawPID = PIDController(clawParams);
+//PID, motor index, rotation index, initPosition:
+Claw claw(clawPID, 9, 10, 0);
 
 
 
@@ -85,6 +91,9 @@ void usercontrol(void)
   KeyInterface userInterface;
   userInterface.pushKeyBind([&lift]() {lift.incTarget();}, std::vector<Key> {Key::R1});
   userInterface.pushKeyBind([&lift]() {lift.decTarget();}, std::vector<Key> {Key::R2});
+
+  userInterface.pushKeyBind([&claw]() {claw.setHigh();}, std::vector<Key> {Key::Up});
+  userInterface.pushKeyBind([&claw]() {claw.setLow();}, std::vector<Key> {Key::Down});
 
   while (true)
   {
