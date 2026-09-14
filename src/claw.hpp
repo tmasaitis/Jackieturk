@@ -18,10 +18,10 @@ struct Claw
 
   Claw(PIDController &pidController, int motorIndex, int rotationIndex, double initPosition = 0): pidController{pidController}, targetPosition{initPosition}
   {
-    liftMotor = vex::motor(motorIndex);
+    clawMotor = vex::motor(motorIndex);
     sensor = vex::rotation(rotationIndex);
     sensor.setPosition(initPosition, vex::degrees);
-    liftMotor.setStopping(vex::hold);
+    clawMotor.setStopping(vex::hold);
   }
 
 
@@ -41,8 +41,8 @@ struct Claw
     double error = targetPosition - position;
     double control = pidController.step(error);
 
-    liftMotor.setVelocity(control, vex::percent);
-    liftMotor.spin(vex::forward);
+    clawMotor.setVelocity(control, vex::percent);
+    clawMotor.spin(vex::forward);
   }
 
 };

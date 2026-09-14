@@ -28,7 +28,7 @@ private:
 
 public:
   //Test to ensure where this should be enabled at the very beginning, when derivative is correctly computable.
-  PIDController(const Parameters &parameters): parameters{parameters} {}
+  PIDController(Parameters &parameters): parameters{parameters} {}
 
   double step(double error)
   {

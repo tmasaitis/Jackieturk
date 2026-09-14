@@ -8,6 +8,13 @@
 /*----------------------------------------------------------------------------*/
 
 #include "vex.h"
+
+// Disable features not supported or needed on VEX bare-metal RTOS
+//#define TOML_ENABLE_UNWINDOWS 0
+//#define TOML_EXCEPTIONS 0 // Optional: disables C++ exceptions if your project uses -fno-exceptions
+
+//#include "toml.hpp"
+
 #include <cmath>
 #include "keyInterface.hpp"
 #include "pidController.hpp"
@@ -32,8 +39,7 @@ motor motorR2 = motor(14, true);
 motor_group motorsL = motor_group(motorL1, motorL2);
 motor_group motorsR = motor_group(motorR1, motorR2);
 
-motorsL.setStopping(hold);
-motorsR.setStopping(hold);
+
 
 PIDController::Parameters liftParams{1, 0, 1, 100};
 PIDController liftPID = PIDController(liftParams);
@@ -101,6 +107,7 @@ void usercontrol(void)
     userDrive();
     userInterface.pollInput(Controller);
     lift.step();
+    claw.step();
 
     wait(MSPT, msec);
   }
@@ -111,6 +118,9 @@ void usercontrol(void)
 
 int main()
 {
+  motorsL.setStopping(hold);
+  motorsR.setStopping(hold);
+
 
   Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
