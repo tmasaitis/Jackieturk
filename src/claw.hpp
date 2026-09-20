@@ -10,16 +10,18 @@ struct Claw
   const double upperBound = 90;
   const double lowerBound = 0;
 
+
   PIDController &pidController;
-  vex::motor clawMotor;
-  vex::rotation sensor;
 
   double targetPosition;
 
-  Claw(PIDController &pidController, int motorIndex, int rotationIndex, double initPosition = 0): pidController{pidController}, targetPosition{initPosition}
+  vex::motor clawMotor;
+  vex::rotation sensor;
+
+  
+
+  Claw(PIDController &pidController, int motorIndex, int rotationIndex, double initPosition = 0): pidController{pidController}, targetPosition{initPosition}, clawMotor{motorIndex}, sensor{rotationIndex}
   {
-    clawMotor = vex::motor(motorIndex);
-    sensor = vex::rotation(rotationIndex);
     sensor.setPosition(initPosition, vex::degrees);
     clawMotor.setStopping(vex::hold);
   }

@@ -11,16 +11,19 @@ struct Lift
   const double upperBound = 10000;
   const double lowerBound = 0;
 
+  
+
   PIDController &pidController;
+  double targetPosition{};
   vex::motor liftMotor;
   vex::rotation liftSensor;
 
-  double targetPosition;
+  
 
-  Lift(PIDController &pidController, int motorIndex, int rotationIndex, double initPosition = 0): pidController{pidController}, targetPosition{initPosition}
+  Lift(PIDController &pidController, int motorIndex, int rotationIndex, double initPosition = 0): pidController{pidController}, targetPosition{initPosition}, liftMotor(motorIndex), liftSensor(rotationIndex)
   {
-    liftMotor = vex::motor(motorIndex);
-    liftSensor = vex::rotation(rotationIndex);
+    //liftMotor = vex::motor(motorIndex);
+    //liftSensor = vex::rotation(rotationIndex);
     liftSensor.setPosition(initPosition, vex::degrees);
     liftMotor.setStopping(vex::hold);
   }

@@ -9,10 +9,10 @@ public:
 
   struct Parameters
   {
-    double P = 0;
-    double I = 0;
-    double D = 0;
-    double limit = 1;
+    double P;
+    double I;
+    double D;
+    double limit;
   };
 
 private:
