@@ -20,6 +20,7 @@
 #include "pidController.hpp"
 #include "lift.hpp"
 #include "claw.hpp"
+#include <string>
 
 #define TPS 120
 #define MSPT (1000/TPS)
@@ -31,10 +32,10 @@ competition Competition;
 brain Brain;
 controller Controller = controller();
 
-motor motorL1 = motor(11, false);
-motor motorL2 = motor(12, false);
-motor motorR1 = motor(13, true);
-motor motorR2 = motor(14, true);
+motor motorL1 = motor(0, ratio18_1, true);
+motor motorL2 = motor(19, ratio18_1, false);
+motor motorR1 = motor(9, ratio18_1, true);
+motor motorR2 = motor(8, ratio18_1, false);
 
 motor_group motorsL = motor_group(motorL1, motorL2);
 motor_group motorsR = motor_group(motorR1, motorR2);
@@ -44,18 +45,18 @@ motor_group motorsR = motor_group(motorR1, motorR2);
 PIDController::Parameters liftParams{1, 0, 1, 100};
 PIDController liftPID = PIDController(liftParams);
 //PID, motor index, rotation index, initPosition:
-Lift lift(liftPID, 19, 20, 0);
-
+Lift * lift = nullptr;
+/*
 PIDController::Parameters clawParams{1, 0, 1, 50};
 PIDController clawPID = PIDController(clawParams);
 //PID, motor index, rotation index, initPosition:
 Claw claw(clawPID, 9, 10, 0);
-
+*/
 
 
 void pre_auton(void)
 {
-
+  lift = new Lift(liftPID, 20, 18, 0);
 }
 
 
@@ -70,45 +71,54 @@ void autonomous(void)
 
 
 const unsigned short throttleThreshold = 5;
+bool spinning = false;
+bool lastSpinning = false;
+
 void userDrive()
 {
-  int throttle = Controller.Axis2.position();
-  int rotation = Controller.Axis4.position();
+  int throttle = Controller.Axis3.position();
+  int rotation = Controller.Axis1.position();
 
   if (std::abs(throttle) > throttleThreshold || std::abs(rotation) > throttleThreshold) {
     int leftThrottle = throttle + rotation;
     int rightThrottle = throttle - rotation;
     
-    motorsL.setVelocity(leftThrottle, percent);
-    motorsR.setVelocity(rightThrottle, percent);
+    motorsL.spin(forward, leftThrottle, percent);
+    motorsR.spin(forward, rightThrottle, percent);
 
-    motorsL.spin(forward);
-    motorsR.spin(forward);
   } else {
     motorsL.stop();
     motorsR.stop();
   }
+
+  lastSpinning = spinning;
 }
+
+
 
 
 void usercontrol(void)
 {
+  
+  
   //Init User Interface
   KeyInterface userInterface;
-  userInterface.pushKeyBind([]() {lift.incTarget();}, std::vector<Key> {Key::R1});
-  userInterface.pushKeyBind([]() {lift.decTarget();}, std::vector<Key> {Key::R2});
+  userInterface.pushKeyBind([]() {lift->incTarget();}, std::vector<Key> {Key::R1});
+  userInterface.pushKeyBind([]() {lift->decTarget();}, std::vector<Key> {Key::R2});
 
-  userInterface.pushKeyBind([]() {claw.setHigh();}, std::vector<Key> {Key::Up});
-  userInterface.pushKeyBind([]() {claw.setLow();}, std::vector<Key> {Key::Down});
+  //userInterface.pushKeyBind([]() {claw.setHigh();}, std::vector<Key> {Key::Up});
+  //userInterface.pushKeyBind([]() {claw.setLow();}, std::vector<Key> {Key::Down});
 
   while (true)
   {
-
     userDrive();
     userInterface.pollInput(Controller);
-    lift.step();
-    claw.step();
-
+    //lift.step();
+    lift->liftMotor.spin(forward, 20, percent);
+    //claw.step();
+    Brain.Screen.clearLine(1);
+    Brain.Screen.setCursor(1,1);
+    Brain.Screen.print( "%lf", lift->pidController.controlLog);
     wait(MSPT, msec);
   }
 }

@@ -20,7 +20,7 @@ struct Lift
 
   
 
-  Lift(PIDController &pidController, int motorIndex, int rotationIndex, double initPosition = 0): pidController{pidController}, targetPosition{initPosition}, liftMotor(motorIndex), liftSensor(rotationIndex)
+  Lift(PIDController &pidController, int motorIndex, int rotationIndex, double initPosition = 0): pidController{pidController}, targetPosition{initPosition}, liftMotor(motorIndex, vex::ratio6_1, true), liftSensor(rotationIndex)
   {
     //liftMotor = vex::motor(motorIndex);
     //liftSensor = vex::rotation(rotationIndex);
@@ -51,8 +51,7 @@ struct Lift
     double error = targetPosition - position;
     double control = pidController.step(error);
 
-    liftMotor.setVelocity(control, vex::percent);
-    liftMotor.spin(vex::forward);
+    liftMotor.spin(vex::forward, control, vex::percent);
   }
 
 };

@@ -29,7 +29,8 @@ private:
 public:
   //Test to ensure where this should be enabled at the very beginning, when derivative is correctly computable.
   PIDController(Parameters &parameters): parameters{parameters} {}
-
+  double controlLog = 0;
+  
   double step(double error)
   {
     accumulator = clamp(accumulator + parameters.I * error);
@@ -37,7 +38,7 @@ public:
 
     double control = parameters.P * error + accumulator + parameters.D * derivative;
     previousError = error;
-
+    controlLog = control;
     return control;
   }
 };
