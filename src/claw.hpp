@@ -7,7 +7,9 @@
 
 struct Claw
 {
-  const double upperBound = 120;
+  const double clearBound = 720;
+  const double upperBound = 360;
+  const double midBound = 270;
   const double lowerBound = 0;
 
 
@@ -32,9 +34,19 @@ struct Claw
     targetPosition = upperBound;
   }
 
+  void setMid()
+  {
+    targetPosition = midBound;
+  }
+
   void setLow()
   {
     targetPosition = lowerBound;
+  }
+
+  void setClear()
+  {
+    targetPosition = clearBound;
   }
 
   void step()
@@ -44,6 +56,7 @@ struct Claw
     double control = pidController.step(error);
 
     clawMotor.setVelocity(control, vex::percent);
+    //clawMotor.setPosition(targetPosition, vex::degrees);
     clawMotor.spin(vex::forward);
   }
 

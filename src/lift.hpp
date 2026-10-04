@@ -17,6 +17,7 @@ struct Lift
   double targetPosition{};
   vex::motor liftMotor;
   vex::rotation liftSensor;
+  bool enabled = false;
 
   
 
@@ -37,12 +38,18 @@ struct Lift
 
   void incTarget()
   {
-    targetPosition = clamp( targetPosition + sensitivity);
+    if(enabled)
+      targetPosition = clamp( targetPosition + sensitivity);
   }
 
   void decTarget()
   {
-    targetPosition = clamp( targetPosition - sensitivity);
+    if(enabled)
+      targetPosition = clamp( targetPosition - sensitivity);
+  }
+
+  void enable(bool state) {
+    enabled = state;
   }
 
   void step()
