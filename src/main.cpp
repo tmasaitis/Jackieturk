@@ -35,7 +35,7 @@ controller Controller = controller();
 
 motor intake = motor(17, ratio36_1, false);
 short intakeSpeed = 0;
-const unsigned short maxIntakeSpeed = 50;
+const unsigned short maxIntakeSpeed = 75;
 
 motor motorL1 = motor(0, ratio18_1, true);
 motor motorL2 = motor(19, ratio18_1, false);
