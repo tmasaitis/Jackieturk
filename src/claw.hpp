@@ -7,7 +7,7 @@
 
 struct Claw
 {
-  const double upperBound = 90;
+  const double upperBound = 120;
   const double lowerBound = 0;
 
 
@@ -16,13 +16,13 @@ struct Claw
   double targetPosition;
 
   vex::motor clawMotor;
-  vex::rotation sensor;
+  //vex::rotation sensor;
 
   
 
-  Claw(PIDController &pidController, int motorIndex, int rotationIndex, double initPosition = 0): pidController{pidController}, targetPosition{initPosition}, clawMotor{motorIndex}, sensor{rotationIndex}
+  Claw(PIDController &pidController, int motorIndex, double initPosition = 0): pidController{pidController}, targetPosition{initPosition}, clawMotor{motorIndex, vex::ratio18_1, false}//, sensor{rotationIndex}
   {
-    sensor.setPosition(initPosition, vex::degrees);
+    //sensor.setPosition(initPosition, vex::degrees);
     clawMotor.setStopping(vex::hold);
   }
 
@@ -39,7 +39,7 @@ struct Claw
 
   void step()
   {
-    double position = sensor.position(vex::degrees);
+    double position = clawMotor.position(vex::degrees);
     double error = targetPosition - position;
     double control = pidController.step(error);
 

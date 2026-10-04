@@ -42,21 +42,22 @@ motor_group motorsR = motor_group(motorR1, motorR2);
 
 
 
-PIDController::Parameters liftParams{1, 0, 1, 100};
+PIDController::Parameters liftParams{0.25, 0, 2, 50};
 PIDController liftPID = PIDController(liftParams);
 //PID, motor index, rotation index, initPosition:
 Lift * lift = nullptr;
-/*
-PIDController::Parameters clawParams{1, 0, 1, 50};
+
+PIDController::Parameters clawParams{0.5, 0, 1, 30};
 PIDController clawPID = PIDController(clawParams);
 //PID, motor index, rotation index, initPosition:
-Claw claw(clawPID, 9, 10, 0);
-*/
+Claw * claw = nullptr;
+
 
 
 void pre_auton(void)
 {
-  lift = new Lift(liftPID, 20, 18, 0);
+  lift = new Lift(liftPID, 18, 16, 0);
+  claw = new Claw(clawPID, 7, 0);
 }
 
 
@@ -101,24 +102,25 @@ void usercontrol(void)
 {
   
   
-  //Init User Interface
+  //Init User Interface here something son
   KeyInterface userInterface;
   userInterface.pushKeyBind([]() {lift->incTarget();}, std::vector<Key> {Key::R1});
   userInterface.pushKeyBind([]() {lift->decTarget();}, std::vector<Key> {Key::R2});
 
-  //userInterface.pushKeyBind([]() {claw.setHigh();}, std::vector<Key> {Key::Up});
-  //userInterface.pushKeyBind([]() {claw.setLow();}, std::vector<Key> {Key::Down});
+  userInterface.pushKeyBind([]() {claw->setHigh();}, std::vector<Key> {Key::Up});
+  userInterface.pushKeyBind([]() {claw->setLow();}, std::vector<Key> {Key::Down});
 
   while (true)
   {
     userDrive();
     userInterface.pollInput(Controller);
-    //lift.step();
-    lift->liftMotor.spin(forward, 20, percent);
-    //claw.step();
+    lift->step();
+    claw->step();
     Brain.Screen.clearLine(1);
     Brain.Screen.setCursor(1,1);
-    Brain.Screen.print( "%lf", lift->pidController.controlLog);
+    //Brain.Screen.print( "%lf", lift->liftMotor.position(degrees));
+    //Brain.Screen.print( "%lf", lift->pidController.controlLog);
+    Brain.Screen.print( "%lf", claw->clawMotor.position(degrees));
     wait(MSPT, msec);
   }
 }

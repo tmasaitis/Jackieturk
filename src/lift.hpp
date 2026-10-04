@@ -7,8 +7,8 @@
 
 struct Lift
 {
-  const double sensitivity = 1;
-  const double upperBound = 10000;
+  const double sensitivity = 50;
+  const double upperBound = 16000;
   const double lowerBound = 0;
 
   
@@ -24,7 +24,7 @@ struct Lift
   {
     //liftMotor = vex::motor(motorIndex);
     //liftSensor = vex::rotation(rotationIndex);
-    liftSensor.setPosition(initPosition, vex::degrees);
+    //liftSensor.setPosition(initPosition, vex::degrees);
     liftMotor.setStopping(vex::hold);
   }
 
@@ -47,7 +47,8 @@ struct Lift
 
   void step()
   {
-    double position = liftSensor.position(vex::degrees);
+    //double position = liftSensor.position(vex::degrees);
+    double position = liftMotor.position(vex::degrees);
     double error = targetPosition - position;
     double control = pidController.step(error);
 
