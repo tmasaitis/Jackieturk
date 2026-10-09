@@ -86,7 +86,7 @@ bool lastSpinning = false;
 void userDrive()
 {
   int throttle = Controller.Axis3.position();
-  int rotation = Controller.Axis1.position();
+  int rotation = Controller.Axis1.position() * 0.75;
 
   if (std::abs(throttle) > throttleThreshold || std::abs(rotation) > throttleThreshold) {
     int leftThrottle = throttle + rotation;
