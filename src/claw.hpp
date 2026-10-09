@@ -8,7 +8,7 @@
 struct Claw
 {
   const double clearBound = 720;
-  const double upperBound = 360;
+  const double upperBound = 400;
   const double midBound = 270;
   const double lowerBound = 0;
 
