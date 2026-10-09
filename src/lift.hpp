@@ -10,7 +10,7 @@ struct Lift
   const double sensitivity = 50;
   const double upperBound = 16000;
   const double lowerBound = 0;
-  const unsigned int maxVelocity = 50;
+  const unsigned int maxVelocity = 100;
   int velocity = 0;
 
   
@@ -60,7 +60,7 @@ struct Lift
   {
     double position = liftMotor.position(vex::degrees);
     
-    if(velocity == 0 || position >= upperbound || position <= lowerBound) { 
+    if(velocity == 0 || position >= upperBound || position <= lowerBound) { 
       double error = targetPosition - position;
       double control = pidController.step(error);
       liftMotor.spin(vex::forward, control, vex::percent);
@@ -68,8 +68,9 @@ struct Lift
       liftMotor.spin(vex::forward, velocity, vex::percent);
       targetPosition = position;
     }
+    velocity = 0;
   }
-
+  
 };
 
 #endif
