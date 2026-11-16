@@ -38,15 +38,17 @@ short intakeSpeed = 0;
 const unsigned short maxIntakeSpeed = 75;
 
 motor motorL1 = motor(0, ratio18_1, true);
-motor motorL2 = motor(19, ratio18_1, false);
-motor motorR1 = motor(9, ratio18_1, true);
+motor motorL2 = motor(1, ratio18_1, true);
+motor motorL3 = motor(2, false);
+motor motorR1 = motor(9, ratio18_1, false);
 motor motorR2 = motor(8, ratio18_1, false);
+motor motorR3 = motor(7, true);
 
-motor_group motorsL = motor_group(motorL1, motorL2);
-motor_group motorsR = motor_group(motorR1, motorR2);
+motor_group motorsL = motor_group(motorL1, motorL2, motorL3);
+motor_group motorsR = motor_group(motorR1, motorR2, motorR3);
 
 
-
+/*
 PIDController::Parameters liftParams{0.25, 0, 2, 100};
 PIDController liftPID = PIDController(liftParams);
 //PID, motor index, rotation index, initPosition:
@@ -59,20 +61,21 @@ Claw * claw = nullptr;
 
 
 pneumatics clawCylinder(Brain.ThreeWirePort.A);
-
+*/
 
 void pre_auton(void)
 {
-  lift = new Lift(liftPID, 18, 16, 0);
-  claw = new Claw(clawPID, 7, 0);
-  intake.spin(forward);
+  //lift = new Lift(liftPID, 18, 16, 0);
+  //claw = new Claw(clawPID, 7, 0);
+  //intake.spin(forward);
 }
 
 
 
 
-void autonomous(void)
+void autonomous(void) //son
 {
+
 
 }
 
@@ -112,7 +115,7 @@ double linIntNorm(double x, double lower, double upper) {
   return (x - lower) / (upper - lower);
 }
 
-
+/*
 bool unfoldSequence = false;
 bool foldSequence = false;
 bool unfolded = false;
@@ -173,42 +176,42 @@ void sequenceStep() {
     claw->setHigh();
 }
 
-
+*/
 void usercontrol(void)
 {
   
   
   //Init User Interface here something son son son son son
   KeyInterface userInterface;
-  userInterface.pushKeyBind([]() {lift->incTarget();}, std::vector<Key> {Key::R1});
-  userInterface.pushKeyBind([]() {lift->decTarget();}, std::vector<Key> {Key::R2});
+  //userInterface.pushKeyBind([]() {lift->incTarget();}, std::vector<Key> {Key::R1});
+  //userInterface.pushKeyBind([]() {lift->decTarget();}, std::vector<Key> {Key::R2});
 
-  userInterface.pushKeyBind([]() {intake.setVelocity(maxIntakeSpeed, percent);}, std::vector<Key> {Key::L1});
-  userInterface.pushKeyBind([]() {intake.setVelocity(-maxIntakeSpeed, percent);}, std::vector<Key> {Key::L2});
+  //userInterface.pushKeyBind([]() {intake.setVelocity(maxIntakeSpeed, percent);}, std::vector<Key> {Key::L1});
+  //userInterface.pushKeyBind([]() {intake.setVelocity(-maxIntakeSpeed, percent);}, std::vector<Key> {Key::L2});
 
-  userInterface.pushKeyBind([]() {clawCylinder.open();}, std::vector<Key> {Key::Up});
-  userInterface.pushKeyBind([]() {clawCylinder.close();}, std::vector<Key> {Key::Down});
+  //userInterface.pushKeyBind([]() {clawCylinder.open();}, std::vector<Key> {Key::Up});
+  //userInterface.pushKeyBind([]() {clawCylinder.close();}, std::vector<Key> {Key::Down});
 
-  userInterface.pushKeyBind([]() {fold(); foldButton = true;}, std::vector<Key> {Key::A});
+  //userInterface.pushKeyBind([]() {fold(); foldButton = true;}, std::vector<Key> {Key::A});
 
   while (true)
   {
-    intake.setVelocity(0, percent);
+    //intake.setVelocity(0, percent);
     userInterface.pollInput(Controller);
     
     userDrive();
-    lift->step();
-    claw->step();
-    Brain.Screen.clearLine(1);
-    Brain.Screen.setCursor(1,1);
-    Brain.Screen.print( "%lf", lift->liftMotor.position(degrees));
+    //lift->step();
+    //claw->step();
+    //Brain.Screen.clearLine(1);
+    //Brain.Screen.setCursor(1,1);
+    //Brain.Screen.print( "%lf", lift->liftMotor.position(degrees));
     //Brain.Screen.print( "%lf", lift->pidController.controlLog);
     //Brain.Screen.print( "%lf", claw->clawMotor.position(degrees));
     
-    sequenceStep();
+    //sequenceStep();
 
-    foldEdge.step(foldButton);
-    foldButton = false;
+    //foldEdge.step(foldButton);
+    //foldButton = false;
     wait(MSPT, msec);
   }
 }
@@ -226,7 +229,7 @@ int main()
   Competition.drivercontrol(usercontrol);
   pre_auton();
 
-  // Prevent main from exiting with an infinite loop.
+  // Prevent main from exiting with an infinite loop. son
   while (true)
   {
     wait(100, msec);
