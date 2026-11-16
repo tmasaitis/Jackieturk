@@ -10,6 +10,8 @@ struct Lift
   const double sensitivity = 50;
   const double upperBound = 16000;
   const double lowerBound = 0;
+  const unsigned int maxVelocity = 50;
+  int velocity = 0;
 
   
 
@@ -39,13 +41,15 @@ struct Lift
   void incTarget()
   {
     if(enabled)
-      targetPosition = clamp( targetPosition + sensitivity);
+      velocity = maxVelocity;
+      //targetPosition = clamp( targetPosition + sensitivity);
   }
 
   void decTarget()
   {
     if(enabled)
-      targetPosition = clamp( targetPosition - sensitivity);
+      velocity = -maxVelocity;
+      //targetPosition = clamp( targetPosition - sensitivity);
   }
 
   void enable(bool state) {
@@ -54,12 +58,16 @@ struct Lift
 
   void step()
   {
-    //double position = liftSensor.position(vex::degrees);
     double position = liftMotor.position(vex::degrees);
-    double error = targetPosition - position;
-    double control = pidController.step(error);
-
-    liftMotor.spin(vex::forward, control, vex::percent);
+    
+    if(velocity == 0 || position >= upperbound || position <= lowerBound) { 
+      double error = targetPosition - position;
+      double control = pidController.step(error);
+      liftMotor.spin(vex::forward, control, vex::percent);
+    } else {
+      liftMotor.spin(vex::forward, velocity, vex::percent);
+      targetPosition = position;
+    }
   }
 
 };
