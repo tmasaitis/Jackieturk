@@ -18,16 +18,12 @@ struct Lift
   PIDController &pidController;
   double targetPosition{};
   vex::motor liftMotor;
-  vex::rotation liftSensor;
   bool enabled = false;
 
   
 
-  Lift(PIDController &pidController, int motorIndex, int rotationIndex, double initPosition = 0): pidController{pidController}, targetPosition{initPosition}, liftMotor(motorIndex, vex::ratio6_1, true), liftSensor(rotationIndex)
+  Lift(PIDController &pidController, int motorIndex, double initPosition = 0): pidController{pidController}, liftMotor(motorIndex, vex::ratio6_1, true)
   {
-    //liftMotor = vex::motor(motorIndex);
-    //liftSensor = vex::rotation(rotationIndex);
-    //liftSensor.setPosition(initPosition, vex::degrees);
     liftMotor.setStopping(vex::hold);
   }
 

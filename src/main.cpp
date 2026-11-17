@@ -99,8 +99,8 @@ void userDrive()
     motorsR.spin(forward, rightThrottle, percent);
 
   } else {
-    motorsL.stop();
-    motorsR.stop();
+    motorsL.stop(brake);
+    motorsR.stop(brake);
   }
 
   lastSpinning = spinning;
@@ -221,8 +221,8 @@ void usercontrol(void)
 
 int main()
 {
-  motorsL.setStopping(hold);
-  motorsR.setStopping(hold);
+  motorsL.setStopping(brake);
+  motorsR.setStopping(brake);
 
 
   Competition.autonomous(autonomous);
